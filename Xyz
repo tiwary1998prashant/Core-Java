@@ -74,3 +74,50 @@ export class MastersComponent implements OnInit {
     this.activeItem = this.tabs[$event.nextId - 1].itemName;
   }
 }
+
+
+
+
+
+
+<h5>Masters</h5>
+<div class="row">
+  <div class="col-md-2">
+    <div class="list-group">
+      <a href="#" class="list-group-item list-group-item-action" onclick="return false"
+        *ngFor="let masterMenuItem of masterMenuItems"
+        [ngClass]="{ 'active': activeItem == masterMenuItem.itemName}" (click)="menuItemClick(masterMenuItem)">
+        {{masterMenuItem.displayName}}
+      </a>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <ul ngbNav #nav="ngbNav" [(activeId)]="activeItem" class="nav-tabs">
+      <li *ngFor="let tab of tabs" [ngbNavItem]="tab.itemName">
+        <button ngbNavLink>
+          {{tab.displayName}}
+          <span class="fa fa-window-close" (click)="onCloseClick(tab)"></span>
+        </button>
+        <ng-template ngbNavContent>
+          <div class="tab-content">
+            <div class="tab-pane fade show" role="tabpanel" [id]="tab.itemName">
+              <!-- Your main content goes here -->
+              <ng-container *ngIf="tab.component === 'CountriesComponent'; else otherComponent">
+                <app-countries></app-countries>
+              </ng-container>
+              <ng-template #otherComponent>
+                <!-- Add similar ngIf blocks for other components -->
+              </ng-template>
+            </div>
+          </div>
+        </ng-template>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<pre>Active: {{ activeItem }}</pre>
+
+
+
