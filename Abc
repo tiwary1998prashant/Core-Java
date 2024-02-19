@@ -1,1 +1,130 @@
 
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Country } from '../../../models/country';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { CountriesService } from '../../../services/countries.service';
+import { HttpClient } from '@angular/common/http';
+
+@Component({
+  selector: 'app-countries',
+  templateUrl: './countries.component.html',
+  styleUrls: ['./countries.component.scss']
+})
+export class CountriesComponent implements OnInit {
+  countries: Country[] = [];
+  showLoading: boolean = false;
+  deleteCountry: Country = new Country();
+  editIndex: number | any = null;
+  deleteIndex: number | any = null;
+  searchBy: string = "countryName";
+  searchText: string = "";
+  currentPageIndex: number = 0;
+  pages: any[] = [];
+  pageSize: number = 7;
+  newForm: FormGroup | any = null;
+  editForm: FormGroup | any = null;
+
+  @ViewChild("defaultTextBox_New") defaultTextBox_New: ElementRef | any = null;
+  @ViewChild("defaultTextBox_Edit") defaultTextBox_Edit: ElementRef | any = null;
+
+  constructor(
+    private countriesService: CountriesService,
+    private formBuilder: FormBuilder,
+    private http: HttpClient
+  ) {}
+
+  ngOnInit() {
+    this.countriesService.getCountries().subscribe(
+      (response: Country[]) => {
+        this.countries = response;
+        this.showLoading = false;
+        this.calculateNoOfPages();
+      }
+    );
+
+    this.newForm = this.formBuilder.group({
+      countryID: this.formBuilder.control(null),
+      countryName: this.formBuilder.control(null, [Validators.required])
+    });
+
+    this.editForm = this.formBuilder.group({
+      countryID: this.formBuilder.control(null),
+      countryName: this.formBuilder.control(null, [Validators.required])
+    });
+  }
+
+  calculateNoOfPages() {
+    let noOfPages = Math.ceil(this.countries.length / this.pageSize);
+    this.pages = Array.from({ length: noOfPages }, (_, i) => ({ pageIndex: i }));
+    this.currentPageIndex = 0;
+  }
+
+  onPageIndexClicked(ind: number) {
+    if (ind >= 0 && ind < this.pages.length) {
+      this.currentPageIndex = ind;
+    }
+  }
+
+  onNewClick(event: any) {
+    this.newForm.reset({ countryID: null });
+    this.defaultTextBox_New.nativeElement.focus();
+  }
+
+  onSaveClick() {
+    if (this.newForm.valid) {
+      this.countriesService.insertCountry(this.newForm.value).subscribe(
+        (response: Country) => {
+          this.countries.push(response);
+          this.newForm.reset();
+          this.calculateNoOfPages();
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }
+  }
+
+  onEditClick(event: any, country: Country) {
+    this.editForm.reset();
+    this.editForm.patchValue(country);
+    this.editIndex = this.countries.indexOf(country);
+    this.defaultTextBox_Edit.nativeElement.focus();
+  }
+
+  onUpdateClick() {
+    if (this.editForm.valid) {
+      this.countriesService.updateCountry(this.editForm.value).subscribe(
+        (response: Country) => {
+          this.countries[this.editIndex] = response;
+          this.editForm.reset();
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }
+  }
+
+  onDeleteClick(event: any, country: Country) {
+    this.deleteCountry.countryID = country.countryID;
+    this.deleteCountry.countryName = country.countryName;
+    this.deleteIndex = this.countries.indexOf(country);
+  }
+
+  onDeleteConfirmClick() {
+    this.countriesService.deleteCountry(this.deleteCountry.countryID).subscribe(
+      () => {
+        this.countries.splice(this.deleteIndex, 1);
+        this.calculateNoOfPages();
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+
+  onSearchTextChange(event: any) {
+    this.calculateNoOfPages();
+  }
+}
