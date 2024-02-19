@@ -1,0 +1,70 @@
+// a.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-a',
+  templateUrl: './a.component.html',
+  styleUrls: ['./a.component.css']
+})
+export class AComponent {
+  activeTab: string = 'content1';
+
+  setActiveTab(tabId: string): void {
+    this.activeTab = tabId;
+  }
+}
+
+
+
+<!-- a.component.html -->
+
+<div class="container mt-4">
+  <div class="row">
+    <!-- Left Column (Size 4) -->
+    <div class="col-md-4">
+      <h2>Menu</h2>
+      <ul class="list-group">
+        <li class="list-group-item" (click)="setActiveTab('content1')">Home</li>
+        <li class="list-group-item" (click)="setActiveTab('content2')">B Component</li>
+        <li class="list-group-item" (click)="setActiveTab('content3')">C Component</li>
+      </ul>
+    </div>
+
+    <!-- Right Column (Size 8) -->
+    <div class="col-md-8">
+      <h2>Navbar with Tabs</h2>
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link" id="content1" data-toggle="tab" href="#content1">Tab 1</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="content2" data-toggle="tab" href="#content2">Tab 2</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="content3" data-toggle="tab" href="#content3">Tab 3</a>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <div class="tab-pane fade" id="content1">
+          <!-- Content for Tab 1 -->
+          Content of Tab 1 goes here.
+        </div>
+        <div class="tab-pane fade" id="content2">
+          <!-- Content for Tab 2 -->
+          <ng-container *ngIf="activeTab === 'content2'">
+            <app-b></app-b>
+          </ng-container>
+        </div>
+        <div class="tab-pane fade" id="content3">
+          <!-- Content for Tab 3 -->
+          <ng-container *ngIf="activeTab === 'content3'">
+            <app-c></app-c>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
