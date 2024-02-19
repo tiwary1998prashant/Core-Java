@@ -1,28 +1,3 @@
-
-// a.component.ts
-
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-a',
-  templateUrl: './a.component.html',
-  styleUrls: ['./a.component.css']
-})
-export class AComponent {
-  activeTab: string = 'content1';
-  navs = ['content1', 'content2', 'content3'];
-
-  setActiveTab(tabId: string): void {
-    this.activeTab = tabId;
-  }
-
-  close(event: Event, id: string): void {
-    // Handle closing of tabs if needed
-    event.preventDefault();
-  }
-}
-
-
 <!-- a.component.html -->
 
 <div class="container mt-4">
@@ -47,8 +22,16 @@ export class AComponent {
             <span class="btn-close ms-3 fw-light" (click)="close($event, id)"></span>
           </button>
           <ng-template ngbNavContent>
-            <!-- Replace the content below with your actual component or template -->
-            <p>Tab {{ id }} content</p>
+            <!-- Content for Tab {{ id }} -->
+            <div *ngIf="id === 'content1'">
+              <p>Content of Tab 1 goes here.</p>
+            </div>
+            <div *ngIf="id === 'content2'">
+              <app-b></app-b>
+            </div>
+            <div *ngIf="id === 'content3'">
+              <app-c></app-c>
+            </div>
           </ng-template>
         </li>
       </ul>
