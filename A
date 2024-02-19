@@ -1,69 +1,94 @@
-// a.component.ts
+// masters.component.ts
 
-import { Component, Type } from '@angular/core';
-import { CountriesComponent } from '../countries/countries.component'; // Replace with your actual component imports
-import { ClientLocationsComponent } from '../client-locations/client-locations.component';
-import { TaskPrioritiesComponent } from '../task-priorities/task-priorities.component';
-import { TaskStatusComponent } from '../task-status/task-status.component';
+import { Component, OnInit, ViewChildren, QueryList, ViewContainerRef, ComponentRef, ComponentFactoryResolver, Type } from '@angular/core';
 
 @Component({
-  selector: 'app-a',
-  templateUrl: './a.component.html',
-  styleUrls: ['./a.component.css']
+  selector: 'app-masters',
+  templateUrl: './masters.component.html',
+  styleUrls: ['./masters.component.scss']
 })
-export class AComponent {
-  masterMenuItems: MenuItem[] = [
+export class MastersComponent implements OnInit {
+  masterMenuItems = [
     { itemName: "Countries", displayName: "Countries", component: CountriesComponent },
     { itemName: "ClientLocations", displayName: "Client Locations", component: ClientLocationsComponent },
     { itemName: "TaskPriorities", displayName: "Task Priorities", component: TaskPrioritiesComponent },
     { itemName: "TaskStatus", displayName: "Task Status", component: TaskStatusComponent },
   ];
 
-  activeTab: string = ''; // Track the active tab
-  activeComponent: Type<any> | null = null; // Track the active component
+  activeItem: string = "";
+  tabs: any[] = [];
 
-  setActiveTab(itemName: string): void {
-    this.activeTab = itemName;
-    const selectedMenuItem = this.masterMenuItems.find(item => item.itemName === itemName);
-    this.activeComponent = selectedMenuItem ? selectedMenuItem.component : null;
+  @ViewChildren('dynamicComponent', { read: ViewContainerRef }) dynamicComponentRefs: QueryList<ViewContainerRef> | any = null;
+
+  constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
+
+  ngOnInit() {}
+
+  menuItemClick(clickedMasterMenuItem: any) {
+    this.activeItem = clickedMasterMenuItem.itemName;
+
+    const matchingTabs = this.tabs.filter(tab => tab.itemName === clickedMasterMenuItem.itemName);
+
+    if (matchingTabs.length === 0) {
+      const tabIndex = this.tabs.length;
+      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(clickedMasterMenuItem.component);
+      const viewContainerRef = this.dynamicComponentRefs.toArray()[tabIndex];
+
+      this.tabs.push({
+        tabIndex,
+        itemName: clickedMasterMenuItem.itemName,
+        displayName: clickedMasterMenuItem.displayName,
+        viewContainerRef
+      });
+
+      const componentRef = viewContainerRef.createComponent(componentFactory);
+
+      // Perform any component-specific logic here
+    }
   }
 
-  close(event: Event, itemName: string): void {
-    // Handle closing of tabs if needed
-    event.preventDefault();
-    // Add your logic to close the tab or remove the component
+  onCloseClick(clickedTab: any) {
+    clickedTab.viewContainerRef.remove();
+    this.tabs.splice(this.tabs.indexOf(clickedTab), 1);
+
+    if (this.tabs.length > 0) {
+      this.activeItem = this.tabs[0].itemName;
+    }
   }
 }
 
-interface MenuItem {
-  itemName: string;
-  displayName: string;
-  component: Type<any>;
-}
 
+<!-- masters.component.html -->
 
-<!-- a.component.html -->
-
-<div class="container mt-4">
-  <div class="row">
-    <!-- Left Column (Size 4) -->
-    <div class="col-md-4">
-      <h2>Menu</h2>
-      <div class="list-group">
-        <a *ngFor="let menuItem of masterMenuItems" class="list-group-item" (click)="setActiveTab(menuItem.itemName)">
-          {{ menuItem.displayName }}
-        </a>
-      </div>
+<h5>Masters</h5>
+<div class="row">
+  <div class="col-md-2">
+    <div class="list-group">
+      <a href="#" class="list-group-item list-group-item-action"
+        *ngFor="let masterMenuItem of masterMenuItems"
+        [ngClass]="{ 'active': activeItem === masterMenuItem.itemName}" (click)="menuItemClick(masterMenuItem)">
+        {{ masterMenuItem.displayName }}
+      </a>
     </div>
+  </div>
 
-    <!-- Right Column (Size 8) -->
-    <div class="col-md-8">
-      <h2>Dynamic Component Container</h2>
-      <div *ngIf="activeComponent">
-        <ng-container [ngComponentOutlet]="activeComponent"></ng-container>
-      </div>
+  <div class="col-md-8">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item" *ngFor="let tab of tabs">
+        <a class="nav-link" role="tab" [class.active]="activeItem === tab.itemName" (click)="activeItem = tab.itemName">
+          {{ tab.displayName }}
+          <span class="fa fa-window-close" (click)="onCloseClick(tab)"></span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <ng-container *ngFor="let tab of tabs">
+        <div class="tab-pane fade show" role="tabpanel" [id]="tab.itemName" [class.active]="activeItem === tab.itemName">
+          <!-- No need for appComponentLoader directive -->
+          <ng-container #dynamicComponent></ng-container>
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>
-
-
