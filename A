@@ -1,3 +1,47 @@
+// a.component.ts
+
+import { Component, Type } from '@angular/core';
+import { CountriesComponent } from '../countries/countries.component'; // Replace with your actual component imports
+import { ClientLocationsComponent } from '../client-locations/client-locations.component';
+import { TaskPrioritiesComponent } from '../task-priorities/task-priorities.component';
+import { TaskStatusComponent } from '../task-status/task-status.component';
+
+@Component({
+  selector: 'app-a',
+  templateUrl: './a.component.html',
+  styleUrls: ['./a.component.css']
+})
+export class AComponent {
+  masterMenuItems: MenuItem[] = [
+    { itemName: "Countries", displayName: "Countries", component: CountriesComponent },
+    { itemName: "ClientLocations", displayName: "Client Locations", component: ClientLocationsComponent },
+    { itemName: "TaskPriorities", displayName: "Task Priorities", component: TaskPrioritiesComponent },
+    { itemName: "TaskStatus", displayName: "Task Status", component: TaskStatusComponent },
+  ];
+
+  activeTab: string = ''; // Track the active tab
+  activeComponent: Type<any> | null = null; // Track the active component
+
+  setActiveTab(itemName: string): void {
+    this.activeTab = itemName;
+    const selectedMenuItem = this.masterMenuItems.find(item => item.itemName === itemName);
+    this.activeComponent = selectedMenuItem ? selectedMenuItem.component : null;
+  }
+
+  close(event: Event, itemName: string): void {
+    // Handle closing of tabs if needed
+    event.preventDefault();
+    // Add your logic to close the tab or remove the component
+  }
+}
+
+interface MenuItem {
+  itemName: string;
+  displayName: string;
+  component: Type<any>;
+}
+
+
 <!-- a.component.html -->
 
 <div class="container mt-4">
@@ -6,35 +50,20 @@
     <div class="col-md-4">
       <h2>Menu</h2>
       <div class="list-group">
-        <a class="list-group-item" (click)="setActiveTab('content1')">Home</a>
-        <a class="list-group-item" (click)="setActiveTab('content2')">B Component</a>
-        <a class="list-group-item" (click)="setActiveTab('content3')">C Component</a>
+        <a *ngFor="let menuItem of masterMenuItems" class="list-group-item" (click)="setActiveTab(menuItem.itemName)">
+          {{ menuItem.displayName }}
+        </a>
       </div>
     </div>
 
     <!-- Right Column (Size 8) -->
     <div class="col-md-8">
-      <h2>Navbar with Tabs</h2>
-      <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs">
-        <li *ngFor="let id of navs" [ngbNavItem]="id">
-          <button ngbNavLink>
-            Tab {{ id }}
-            <span class="btn-close ms-3 fw-light" (click)="close($event, id)"></span>
-          </button>
-          <ng-template ngbNavContent>
-            <!-- Content for Tab {{ id }} -->
-            <div *ngIf="id === 'content1'">
-              <p>Content of Tab 1 goes here.</p>
-            </div>
-            <div *ngIf="id === 'content2'">
-              <app-b></app-b>
-            </div>
-            <div *ngIf="id === 'content3'">
-              <app-c></app-c>
-            </div>
-          </ng-template>
-        </li>
-      </ul>
+      <h2>Dynamic Component Container</h2>
+      <div *ngIf="activeComponent">
+        <ng-container [ngComponentOutlet]="activeComponent"></ng-container>
+      </div>
     </div>
   </div>
 </div>
+
+
