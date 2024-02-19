@@ -1,1 +1,57 @@
 
+// a.component.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-a',
+  templateUrl: './a.component.html',
+  styleUrls: ['./a.component.css']
+})
+export class AComponent {
+  activeTab: string = 'content1';
+  navs = ['content1', 'content2', 'content3'];
+
+  setActiveTab(tabId: string): void {
+    this.activeTab = tabId;
+  }
+
+  close(event: Event, id: string): void {
+    // Handle closing of tabs if needed
+    event.preventDefault();
+  }
+}
+
+
+<!-- a.component.html -->
+
+<div class="container mt-4">
+  <div class="row">
+    <!-- Left Column (Size 4) -->
+    <div class="col-md-4">
+      <h2>Menu</h2>
+      <div class="list-group">
+        <a class="list-group-item" (click)="setActiveTab('content1')">Home</a>
+        <a class="list-group-item" (click)="setActiveTab('content2')">B Component</a>
+        <a class="list-group-item" (click)="setActiveTab('content3')">C Component</a>
+      </div>
+    </div>
+
+    <!-- Right Column (Size 8) -->
+    <div class="col-md-8">
+      <h2>Navbar with Tabs</h2>
+      <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs">
+        <li *ngFor="let id of navs" [ngbNavItem]="id">
+          <button ngbNavLink>
+            Tab {{ id }}
+            <span class="btn-close ms-3 fw-light" (click)="close($event, id)"></span>
+          </button>
+          <ng-template ngbNavContent>
+            <!-- Replace the content below with your actual component or template -->
+            <p>Tab {{ id }} content</p>
+          </ng-template>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
