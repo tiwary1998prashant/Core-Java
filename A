@@ -1,107 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
-  FormGroup,
-  FormBuilder,
-  Validators,
-  FormArray,
+  AbstractControl,
   FormControl,
+  ValidationErrors,
+  ValidatorFn,
 } from '@angular/forms';
-import { Country } from 'src/app/models/country';
-import { CountriesService } from 'src/app/services/countries.service';
-import { CustomValidatorsService } from 'src/app/services/custom-validators.service';
 
-@Component({
-  selector: 'app-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.scss'],
+@Injectable({
+  providedIn: 'root',
 })
-export class SignupComponent implements OnInit {
-  signupForm!: FormGroup;
-  countries: Country[] = [];
+export class CustomValidatorsService {
+  constructor() {}
 
-  constructor(
-    private fb: FormBuilder,
-    private customValidatorsService: CustomValidatorsService,
-    private countriesService: CountriesService
-  ) {}
-  ngOnInit(): void {
-    this.countries = this.countriesService.getCountries();
-
-    this.signupForm = this.fb.group(
-      {
-        personDetails: this.fb.group({
-          firstName: [null, Validators.required],
-          lastName: [null, Validators.required],
-        }),
-        email: [null, [Validators.required, Validators.email]],
-        mobileNumber: [
-          null,
-          [Validators.required, Validators.pattern(/^[789]\d{9}$/)],
-        ],
-        password: [null, Validators.required],
-        confirmPassword: [null, Validators.required],
-        dateOfBirth: [
-          null,
-          [
-            Validators.required,
-            this.customValidatorsService.minimumAgeValidator(18),
-          ],
-        ],
-        gender: [null, Validators.required],
-        countryID: [null, Validators.required],
-        skills: this.fb.array([]),
-        receiveNewsLetters: [null],
-      },
-
-      {
-        validators: [
-          this.customValidatorsService.compareValidator(
-            'confirmPassword',
-            'password'
-          ),
-        ],
+  public minimumAgeValidator(minAge: number): ValidatorFn {
+    return (control: AbstractControl) => {
+      if (!control.value) {
+        return null;
       }
-    );
+      var todayDate = new Date();
+      var dateOfBirth = new Date(control.value);
+      var diffMilliSeconds = Math.abs(
+        todayDate.getTime() - dateOfBirth.getTime()
+      );
+      var diffYears = diffMilliSeconds / (1000 * 60 * 60 * 24) / 365.25;
+
+      if (diffYears >= minAge) {
+        return null;
+      } else {
+        return { minAge: { valid: false } };
+      }
+    };
   }
 
-  get firstName() {
-    return this.signupForm.get('personDetails.firstName');
-  }
-  get lastName() {
-    return this.signupForm.get('personDetails.lastName');
-  }
-  get email() {
-    return this.signupForm.get('email');
-  }
-  get mobileNumber() {
-    return this.signupForm.get('mobileNumber');
-  }
-  get password() {
-    return this.signupForm.get('password');
-  }
-  get confirmPassword() {
-    return this.signupForm.get('confirmPassword');
-  }
-  get dateOfBirth() {
-    return this.signupForm.get('dateOfBirth');
-  }
-  get countryID() {
-    return this.signupForm.get('countryID');
-  }
-  get skills() {
-    return this.signupForm.get('skills') as FormArray;
-  }
+  public compareValidator(
+    controlToValidate: string,
+    controlToCompare: string
+  ): ValidatorFn {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      if (!(formGroup.get(controlToValidate) as FormControl).value) return null; //return, if the confirm password is null
 
-  onAddSkill() {
-    var formGroup = new FormGroup({
-      skillName: new FormControl(null, Validators.required),
-      skillLevel: new FormControl(null, Validators.required),
-    });
-
-    (<FormArray>this.signupForm.get('skills')).push(formGroup);
-  }
-
-  onRemoveSkill(index: number) {
-    (<FormArray>this.signupForm.get('skills')).removeAt(index);
+      if (
+        (formGroup.get(controlToValidate) as FormControl).value ==
+        (formGroup.get(controlToCompare) as any).value
+      )
+        return null; //valid
+      else {
+        (formGroup.get(controlToValidate) as FormControl).setErrors({
+          compareValidator: { valid: false },
+        });
+        return { compareValidator: { valid: false } }; //invalid
+      }
+    };
   }
 }
