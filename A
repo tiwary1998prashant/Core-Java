@@ -1,1 +1,53 @@
 
+import { HttpBackend, HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { User } from '../models/user';
+import { Observable, map } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class LoginService {
+  urlPrefix: string = 'http://localhost:9090';
+
+  currentUserName!: string | null;
+
+  constructor(
+    private httpClient: HttpClient,
+    private httpBackend: HttpBackend
+  ) {}
+
+  public login(user: User): Observable<any> {
+
+    this.httpClient= new HttpClient(this.httpBackend)// this line is add becasue here we do not need jwt intersecptor so we use httpBackend
+
+    return this.httpClient
+      .post<any>(this.urlPrefix + '/authenticate', user, {
+        responseType: 'json',
+        observe: 'response',
+      })
+      .pipe(
+        map((response) => {
+          if (response) {
+            this.currentUserName = response.body.userName;
+            sessionStorage['currentUser'] = JSON.stringify(response.body);
+          }
+          return response.body;
+        })
+      );
+  }
+  public Logout() {
+    sessionStorage.removeItem('currentUser');
+    this.currentUserName = null;
+  }
+
+  // this logic only for firt time user visit
+  private hasLoggedInKey = 'hasLoggedIn';
+
+  hasLoggedInBefore(): boolean {
+    return !!sessionStorage.getItem(this.hasLoggedInKey);
+  }
+  setLoggedInFlag(): void {
+    sessionStorage.setItem(this.hasLoggedInKey, 'true');
+  }
+}
