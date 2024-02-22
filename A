@@ -1,32 +1,107 @@
-import { Injectable } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpInterceptor,
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormArray,
+  FormControl,
+} from '@angular/forms';
+import { Country } from 'src/app/models/country';
+import { CountriesService } from 'src/app/services/countries.service';
+import { CustomValidatorsService } from 'src/app/services/custom-validators.service';
 
-@Injectable()
-export class JwtInterceptor implements HttpInterceptor {
-  constructor() {}
+@Component({
+  selector: 'app-signup',
+  templateUrl: './signup.component.html',
+  styleUrls: ['./signup.component.scss'],
+})
+export class SignupComponent implements OnInit {
+  signupForm!: FormGroup;
+  countries: Country[] = [];
 
-  intercept(
-    request: HttpRequest<unknown>,
-    next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-   // console.log('before Interceptor request', request);
-    var currentUser = { token: '' };
-    if (sessionStorage['currentUser'] != null) {
-      currentUser = JSON.parse(sessionStorage['currentUser']);
-    }
+  constructor(
+    private fb: FormBuilder,
+    private customValidatorsService: CustomValidatorsService,
+    private countriesService: CountriesService
+  ) {}
+  ngOnInit(): void {
+    this.countries = this.countriesService.getCountries();
 
-    request = request.clone({
-      setHeaders: {
-        Authorization: 'Bearer ' + currentUser.token,
+    this.signupForm = this.fb.group(
+      {
+        personDetails: this.fb.group({
+          firstName: [null, Validators.required],
+          lastName: [null, Validators.required],
+        }),
+        email: [null, [Validators.required, Validators.email]],
+        mobileNumber: [
+          null,
+          [Validators.required, Validators.pattern(/^[789]\d{9}$/)],
+        ],
+        password: [null, Validators.required],
+        confirmPassword: [null, Validators.required],
+        dateOfBirth: [
+          null,
+          [
+            Validators.required,
+            this.customValidatorsService.minimumAgeValidator(18),
+          ],
+        ],
+        gender: [null, Validators.required],
+        countryID: [null, Validators.required],
+        skills: this.fb.array([]),
+        receiveNewsLetters: [null],
       },
+
+      {
+        validators: [
+          this.customValidatorsService.compareValidator(
+            'confirmPassword',
+            'password'
+          ),
+        ],
+      }
+    );
+  }
+
+  get firstName() {
+    return this.signupForm.get('personDetails.firstName');
+  }
+  get lastName() {
+    return this.signupForm.get('personDetails.lastName');
+  }
+  get email() {
+    return this.signupForm.get('email');
+  }
+  get mobileNumber() {
+    return this.signupForm.get('mobileNumber');
+  }
+  get password() {
+    return this.signupForm.get('password');
+  }
+  get confirmPassword() {
+    return this.signupForm.get('confirmPassword');
+  }
+  get dateOfBirth() {
+    return this.signupForm.get('dateOfBirth');
+  }
+  get countryID() {
+    return this.signupForm.get('countryID');
+  }
+  get skills() {
+    return this.signupForm.get('skills') as FormArray;
+  }
+
+  onAddSkill() {
+    var formGroup = new FormGroup({
+      skillName: new FormControl(null, Validators.required),
+      skillLevel: new FormControl(null, Validators.required),
     });
-   // console.log('after Interceptor request', request);
-    return next.handle(request);
+
+    (<FormArray>this.signupForm.get('skills')).push(formGroup);
+  }
+
+  onRemoveSkill(index: number) {
+    (<FormArray>this.signupForm.get('skills')).removeAt(index);
   }
 }
