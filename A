@@ -1,78 +1,40 @@
-import {
-  Component,
-  OnInit,
-  ViewChildren,
-  QueryList,
-  ViewContainerRef,
-  ViewChild,
-  Type,
-} from '@angular/core';
-import { TaskStatusComponent } from '../task-status/task-status.component';
-import { TaskPrioritiesComponent } from '../task-priorities/task-priorities.component';
-import { ClientLocationsComponent } from '../client-locations/client-locations.component';
-import { CountriesComponent } from '../countries/countries.component';
+<div class="container">
+  <div class="row">
+    <div class="col-md-3 mt-3">
+      <div class="list-group">
+        <a
+          href="#"
+          class="list-group-item list-group-item-action"
+          onclick="return false"
+          *ngFor="let masterMenuItem of masterMenuItems"
+          (click)="onCreateComponent(masterMenuItem.itemName)"
+          [ngClass]="{ active: activeItem == masterMenuItem.itemName }"
+        >
+          {{ masterMenuItem.displayName }}
+        </a>
+      </div>
+    </div>
+    <div class="col-md-9 mt-3">
+      <div class="shadow">
+        <div *ngIf="activeItem != ''" class="text-end me-3">
+          <button
+            type="button"
+            class="btn-close mt-3 fw-light"
+            aria-label="Close"
+            (click)="onCloseClick($event)"
+          ></button>
+        </div>
+        <h3
+          class="text-center"
+          [ngClass]="
+            activeItem.length % 2 == 0 ? 'text-success' : 'text-danger'
+          "
+        >
+          {{ activeItem | uppercase }}
+        </h3>
 
-@Component({
-  selector: 'app-masters',
-  templateUrl: './masters.component.html',
-  styleUrls: ['./masters.component.scss'],
-})
-export class MastersComponent implements OnInit {
-  masterMenuItems = [
-    {
-      itemName: 'Countries',
-      displayName: 'Countries',
-      component: CountriesComponent,
-    },
-    {
-      itemName: 'ClientLocations',
-      displayName: 'Client Locations',
-      component: ClientLocationsComponent,
-    },
-    {
-      itemName: 'TaskPriorities',
-      displayName: 'Task Priorities',
-      component: TaskPrioritiesComponent,
-    },
-    {
-      itemName: 'TaskStatus',
-      displayName: 'Task Status',
-      component: TaskStatusComponent,
-    },
-  ];
-
-  @ViewChild('container', { read: ViewContainerRef, static: true })
-  container!: ViewContainerRef;
-  tabs: any = [];
-  activeItem = '';
-
-  ngOnInit(): void {
-    this.tabs.push(this.masterMenuItems[0]);
-    this.container.createComponent(this.masterMenuItems[0].component);
-    this.activeItem = this.tabs[0].displayName;
-  }
-
-  onCreateComponent(itemName: string) {
-    const item = this.masterMenuItems.filter(
-      (item: any) => item.itemName === itemName
-    );
-
-    if (this.tabs.length < 1) {
-      this.tabs.push(item[0]);
-      this.container.clear();
-      this.container.createComponent(this.tabs[0].component);
-      this.activeItem = this.tabs[0].displayName;
-    } else {
-      this.tabs.splice(0, 1);
-      this.tabs.push(item[0]);
-      this.container.clear();
-      this.container.createComponent(this.tabs[0].component);
-      this.activeItem = this.tabs[0].displayName;
-    }
-  }
-  onCloseClick(event: any) {
-    this.tabs.splice(0, 1);
-    this.container.clear();
-    this.activeItem = '';
-  }
-}
+        <ng-container #container></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
