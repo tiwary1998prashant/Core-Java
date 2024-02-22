@@ -1,47 +1,78 @@
-<div class="card projectCard mb-2">
-  <div class="card-header">
-    <div class="row">
-      <div class="col-md-6">
-        <span
-          [ngClass]="
-            +currentProject.projectID % 2 === 0 ? 'text-danger' : 'text-success'
-          "
-          >{{ currentProject.projectID }}
-        </span>
-        <h4>{{ currentProject.projectName }}</h4>
-      </div>
-      <div class="col-md-6 text-end">
-        <ng-content></ng-content>
-      </div>
-    </div>
-  </div>
-  <div class="card-body">
-    <table class="table" [hidden]="hideDetails">
-      <tbody>
-        <tr>
-          <td>Date Of Start</td>
-          <td>{{ currentProject.dateOfStart }}</td>
-        </tr>
-        <tr>
-          <td>Team Size</td>
-          <td>{{ currentProject.teamSize }}</td>
-        </tr>
-        <tr>
-          <td>Client Location</td>
-          <td>{{ currentProject.clientLocation.clientLocationName }}</td>
-        </tr>
-        <tr>
-          <td>Status</td>
-          <td>{{ currentProject.status }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="card-footer">
-    <button class="btn btn-warning" (click)="onDeleteClcik(index)">
-      Delete
-    </button>
-    <button class="btn btn-info ms-2" (click)="onEditClick(index)">Edit</button>
-    <a href="#" class="btn btn-primary ms-2">Learn More</a>
-  </div>
-</div>
+import {
+  Component,
+  OnInit,
+  ViewChildren,
+  QueryList,
+  ViewContainerRef,
+  ViewChild,
+  Type,
+} from '@angular/core';
+import { TaskStatusComponent } from '../task-status/task-status.component';
+import { TaskPrioritiesComponent } from '../task-priorities/task-priorities.component';
+import { ClientLocationsComponent } from '../client-locations/client-locations.component';
+import { CountriesComponent } from '../countries/countries.component';
+
+@Component({
+  selector: 'app-masters',
+  templateUrl: './masters.component.html',
+  styleUrls: ['./masters.component.scss'],
+})
+export class MastersComponent implements OnInit {
+  masterMenuItems = [
+    {
+      itemName: 'Countries',
+      displayName: 'Countries',
+      component: CountriesComponent,
+    },
+    {
+      itemName: 'ClientLocations',
+      displayName: 'Client Locations',
+      component: ClientLocationsComponent,
+    },
+    {
+      itemName: 'TaskPriorities',
+      displayName: 'Task Priorities',
+      component: TaskPrioritiesComponent,
+    },
+    {
+      itemName: 'TaskStatus',
+      displayName: 'Task Status',
+      component: TaskStatusComponent,
+    },
+  ];
+
+  @ViewChild('container', { read: ViewContainerRef, static: true })
+  container!: ViewContainerRef;
+  tabs: any = [];
+  activeItem = '';
+
+  ngOnInit(): void {
+    this.tabs.push(this.masterMenuItems[0]);
+    this.container.createComponent(this.masterMenuItems[0].component);
+    this.activeItem = this.tabs[0].displayName;
+  }
+
+  onCreateComponent(itemName: string) {
+    const item = this.masterMenuItems.filter(
+      (item: any) => item.itemName === itemName
+    );
+
+    if (this.tabs.length < 1) {
+      this.tabs.push(item[0]);
+      this.container.clear();
+      this.container.createComponent(this.tabs[0].component);
+      this.activeItem = this.tabs[0].displayName;
+    } else {
+      this.tabs.splice(0, 1);
+      this.tabs.push(item[0]);
+      this.container.clear();
+      this.container.createComponent(this.tabs[0].component);
+      this.activeItem = this.tabs[0].displayName;
+    }
+  }
+  onCloseClick(event: any) {
+    this.tabs.splice(0, 1);
+    this.container.clear();
+    this.activeItem = '';
+  }
+}
