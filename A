@@ -1,37 +1,47 @@
-import {
-  Component,
-  ContentChild,
-  EventEmitter,
-  Input,
-  Output,
-  TemplateRef,
-} from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Project } from 'src/app/models/project';
-import { ProjectsComponent } from '../projects/projects.component';
-import { CheckboxPrinterComponent } from '../checkbox-printer/checkbox-printer.component';
-
-@Component({
-  selector: 'app-project',
-  templateUrl: './project.component.html',
-  styleUrls: ['./project.component.scss'],
-})
-export class ProjectComponent {
-  hideDetails: boolean = false;
-  @Input('currentProject') currentProject!: Project;
-  @Input('recordIndex') index!: number;
-  @Output('onEditClick') edit = new EventEmitter();
-  @Output('onDeleteClcik') delete = new EventEmitter();
-  @ContentChild('isChecked') selected!: CheckboxPrinterComponent;
-
-  onEditClick(index: number) {
-    this.edit.emit({ index });
-  }
-  onDeleteClcik(index: number) {
-    this.delete.emit({ index });
-  }
-
-  onSelect() {
-    this.selected.isChecked = !this.selected.isChecked;
-  }
-}
+<div class="card projectCard mb-2">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-md-6">
+        <span
+          [ngClass]="
+            +currentProject.projectID % 2 === 0 ? 'text-danger' : 'text-success'
+          "
+          >{{ currentProject.projectID }}
+        </span>
+        <h4>{{ currentProject.projectName }}</h4>
+      </div>
+      <div class="col-md-6 text-end">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <table class="table" [hidden]="hideDetails">
+      <tbody>
+        <tr>
+          <td>Date Of Start</td>
+          <td>{{ currentProject.dateOfStart }}</td>
+        </tr>
+        <tr>
+          <td>Team Size</td>
+          <td>{{ currentProject.teamSize }}</td>
+        </tr>
+        <tr>
+          <td>Client Location</td>
+          <td>{{ currentProject.clientLocation.clientLocationName }}</td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td>{{ currentProject.status }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer">
+    <button class="btn btn-warning" (click)="onDeleteClcik(index)">
+      Delete
+    </button>
+    <button class="btn btn-info ms-2" (click)="onEditClick(index)">Edit</button>
+    <a href="#" class="btn btn-primary ms-2">Learn More</a>
+  </div>
+</div>
