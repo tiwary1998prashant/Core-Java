@@ -1,94 +1,167 @@
-// masters.component.ts
-
-import { Component, OnInit, ViewChildren, QueryList, ViewContainerRef, ComponentRef, ComponentFactoryResolver, Type } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { User } from 'src/app/models/user';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SignupComponent } from '../signup/signup.component';
+import { LoginService } from 'src/app/services/login.service';
 
 @Component({
-  selector: 'app-masters',
-  templateUrl: './masters.component.html',
-  styleUrls: ['./masters.component.scss']
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
-export class MastersComponent implements OnInit {
-  masterMenuItems = [
-    { itemName: "Countries", displayName: "Countries", component: CountriesComponent },
-    { itemName: "ClientLocations", displayName: "Client Locations", component: ClientLocationsComponent },
-    { itemName: "TaskPriorities", displayName: "Task Priorities", component: TaskPrioritiesComponent },
-    { itemName: "TaskStatus", displayName: "Task Status", component: TaskStatusComponent },
-  ];
+export class LoginComponent {
+  user = new User();
+  errorMessage!: string;
 
-  activeItem: string = "";
-  tabs: any[] = [];
-
-  @ViewChildren('dynamicComponent', { read: ViewContainerRef }) dynamicComponentRefs: QueryList<ViewContainerRef> | any = null;
-
-  constructor(private componentFactoryResolver: ComponentFactoryResolver) {}
-
-  ngOnInit() {}
-
-  menuItemClick(clickedMasterMenuItem: any) {
-    this.activeItem = clickedMasterMenuItem.itemName;
-
-    const matchingTabs = this.tabs.filter(tab => tab.itemName === clickedMasterMenuItem.itemName);
-
-    if (matchingTabs.length === 0) {
-      const tabIndex = this.tabs.length;
-      const componentFactory = this.componentFactoryResolver.resolveComponentFactory(clickedMasterMenuItem.component);
-      const viewContainerRef = this.dynamicComponentRefs.toArray()[tabIndex];
-
-      this.tabs.push({
-        tabIndex,
-        itemName: clickedMasterMenuItem.itemName,
-        displayName: clickedMasterMenuItem.displayName,
-        viewContainerRef
-      });
-
-      const componentRef = viewContainerRef.createComponent(componentFactory);
-
-      // Perform any component-specific logic here
-    }
+  constructor(
+    private loginService: LoginService,
+    private router: Router,
+    public activeModal: NgbActiveModal,
+    private modalService: NgbModal
+  ) {}
+  onLoginClick(event: any) {
+    this.loginService.login(this.user).subscribe({
+      next: (response) => {
+        this.router.navigate(['/admin', 'dashboard']);
+        //sessionStorage['currentUser'] = JSON.stringify(this.user);
+        this.loginService.setLoggedInFlag();
+        this.close();
+      },
+      error: (error) => {
+        this.errorMessage = 'Username or Password invalid!!!';
+      },
+    });
   }
 
-  onCloseClick(clickedTab: any) {
-    clickedTab.viewContainerRef.remove();
-    this.tabs.splice(this.tabs.indexOf(clickedTab), 1);
-
-    if (this.tabs.length > 0) {
-      this.activeItem = this.tabs[0].itemName;
-    }
+  close() {
+    this.activeModal.close('login');
+  }
+  onRegisterClick() {
+    this.activeModal.close('login');
+    this.modalService.open(SignupComponent);
   }
 }
 
 
-<!-- masters.component.html -->
 
-<h5>Masters</h5>
-<div class="row">
-  <div class="col-md-2">
-    <div class="list-group">
-      <a href="#" class="list-group-item list-group-item-action"
-        *ngFor="let masterMenuItem of masterMenuItems"
-        [ngClass]="{ 'active': activeItem === masterMenuItem.itemName}" (click)="menuItemClick(masterMenuItem)">
-        {{ masterMenuItem.displayName }}
+
+
+<div class="modal-body">
+  <!-- Default form login -->
+  <form class="border border-light p-4" #loginForm="ngForm">
+    <h4 class="mb-4 text-center">Sign in</h4>
+    <!-- Email -->
+    <div class="form-group row mb-4">
+      <input
+        type="email"
+        id="username"
+        name="username"
+        class="form-control p-2"
+        placeholder="E-mail"
+        [(ngModel)]="user.UserName"
+        #username="ngModel"
+        required="required"
+        [ngClass]="{
+          'is-invalid':
+            username.invalid && (username.dirty || username.touched),
+          'is-valid': username.valid && (username.dirty || username.touched)
+        }"
+      />
+      <span
+        class="text-danger fs-6"
+        *ngIf="username.invalid && (username.dirty|| username.touched)&&
+              username.errors?.['required']
+              "
+      >
+        Field is required
+      </span>
+    </div>
+
+    <!-- Password -->
+    <div class="form-group row mb-4">
+      <input
+        type="password"
+        id="password"
+        name="password"
+        class="form-control p-2"
+        placeholder="Password"
+        autocomplete="on"
+        [(ngModel)]="user.Password"
+        #password="ngModel"
+        required="required"
+        [ngClass]="{
+          'is-invalid':
+            password.invalid && (password.dirty || password.touched),
+          'is-valid': password.valid && (password.dirty || password.touched)
+        }"
+      />
+      <span
+        class="text-danger fs-6"
+        *ngIf="password.invalid && (password.dirty|| password.touched)&&
+              password.errors?.['required']
+              "
+      >
+        Field is required
+      </span>
+    </div>
+
+    <div class="d-flex justify-content-around">
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          value="checked"
+          id="remember"
+          checked
+        />
+        <label class="form-check-label" for="remember"> Remember me </label>
+      </div>
+      <div>
+        <!-- Forgot password -->
+        <a href="#" onclick="return false" class="text-decoration-none"
+          >Forgot password?</a
+        >
+      </div>
+    </div>
+    <!-- Sign in button -->
+    <div class="d-grid">
+      <button
+        class="btn btn-info btn-lg my-4 text-white text-uppercase shadow"
+        block="true"
+        (click)="onLoginClick($event)"
+      >
+        Sign in
+      </button>
+    </div>
+
+    <!-- Register -->
+    <div class="text-center">
+      <p>
+        Not a member?
+        <a
+          routerLink="/signup"
+          class="text-decoration-none"
+          (click)="onRegisterClick()"
+          >Register</a
+        >
+      </p>
+      <!-- Social login -->
+      <p>or sign in with:</p>
+
+      <a type="button" class="text-primary mx-2 fs-1">
+        <i class="bi bi-facebook me-3"></i>
+      </a>
+      <a type="button" class="text-danger mx-2 fs-1">
+        <i class="bi bi-google me-3"></i>
+      </a>
+      <a type="button" class="text-primary mx-2 fs-1">
+        <i class="bi bi-linkedin"></i>
+      </a>
+      <a type="button" class="text-dark mx-2 fs-1">
+        <i class="bi bi-github"></i>
       </a>
     </div>
-  </div>
-
-  <div class="col-md-8">
-    <ul class="nav nav-tabs" role="tablist">
-      <li class="nav-item" *ngFor="let tab of tabs">
-        <a class="nav-link" role="tab" [class.active]="activeItem === tab.itemName" (click)="activeItem = tab.itemName">
-          {{ tab.displayName }}
-          <span class="fa fa-window-close" (click)="onCloseClick(tab)"></span>
-        </a>
-      </li>
-    </ul>
-
-    <div class="tab-content">
-      <ng-container *ngFor="let tab of tabs">
-        <div class="tab-pane fade show" role="tabpanel" [id]="tab.itemName" [class.active]="activeItem === tab.itemName">
-          <!-- No need for appComponentLoader directive -->
-          <ng-container #dynamicComponent></ng-container>
-        </div>
-      </ng-container>
-    </div>
-  </div>
+  </form>
+  <!-- Default form login -->
 </div>
