@@ -1,35 +1,133 @@
-import { Directive, Input } from '@angular/core';
 import {
-  AbstractControl,
-  NG_VALIDATORS,
-  ValidationErrors,
-  Validator,
-} from '@angular/forms';
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  QueryList,
+  Renderer2,
+  TemplateRef,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ClientLocation } from 'src/app/models/client-location';
+import { Project } from 'src/app/models/project';
+import { ClientLocationsService } from 'src/app/services/client-locations.service';
+import { ProjectService } from 'src/app/services/project.service';
+import { ProjectComponent } from '../project/project.component';
+import { FormGroup } from '@angular/forms';
 
-@Directive({
-  selector: '[appTeamSizeValidator]',
-  providers: [
-    {
-      provide: NG_VALIDATORS,
-      useExisting: TeamSizeValidatorDirective,
-      multi: true,
-    },
-  ],
+@Component({
+  selector: 'app-projects',
+  templateUrl: './projects.component.html',
+  styleUrls: ['./projects.component.scss'],
 })
-export class TeamSizeValidatorDirective implements Validator {
-  @Input('appTeamSizeValidator') n!: number;
-  constructor() {}
-  validate(control: AbstractControl<any, any>): ValidationErrors | null {
-    let currentValue = control.value;
-    let isValid = currentValue % this.n == 0;
+export class ProjectsComponent implements OnInit {
+  projects!: Project[];
+  clientLocations: ClientLocation[] = [];
 
-    if (isValid) {
-      return null;
-    } else {
-      return { divisible: { valid: false } };
+  newProject: Project = new Project();
+  editProject: Project = new Project();
+  editIndex!: number;
+  deleteProject: Project = new Project();
+  deleteIndex!: number;
+  hideDetails!: boolean;
+  @ViewChild('newForm', { static: false }) createForm!: FormGroup | any;
+  //@ViewChild('pID') pID!: ElementRef;
+
+  constructor(
+    private projectService: ProjectService,
+    private clientLocationsService: ClientLocationsService,
+    private ngbModalService: NgbModal,
+    private renderer: Renderer2
+  ) {}
+  ngOnInit(): void {
+    this.projectService.getAllProjects().subscribe({
+      next: (response) => {
+        this.projects = response;
+      },
+      error: (error) => {
+        console.log('projects api not working ');
+      },
+    });
+    this.clientLocationsService.getClientLocations().subscribe({
+      next: (response) => {
+        this.clientLocations = response;
+      },
+    });
+  }
+
+  onProjectCreate(newProjectModal: TemplateRef<any>) {
+    this.newProject = new Project();
+    this.ngbModalService.open(newProjectModal);
+    this.renderer.selectRootElement('#newProjectID').focus();
+    //this.pID.nativeElement.focus();
+  }
+  onSaveClick() {
+    this.newProject.clientLocation.clientLocationID = 0;
+    this.projectService.insertProject(this.newProject).subscribe({
+      next: (response: Project) => {
+        next: () => {
+          this.projects.push({ ...response });
+          this.newProject = new Project();
+        };
+      },
+      error: (error) => {},
+      complete: () => {},
+    });
+  }
+  onEditClicked(editprojectModal: TemplateRef<any>, index: number) {
+    this.ngbModalService.open(editprojectModal);
+    this.renderer.selectRootElement('#editProjectName').focus();
+    const project = this.projects[index];
+    const formattedDate = project.dateOfStart.split('/').reverse().join('-');
+    this.editProject = { ...project, dateOfStart: formattedDate };
+    this.editIndex = index;
+  }
+  onUpdateClick() {
+    this.projectService.updateProject(this.editProject).subscribe({
+      next: (response) => {
+        this.projects[this.editIndex] = { ...response };
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
+  }
+  onDeleteClicked(deleteProjectModal: TemplateRef<any>, index: number) {
+    this.ngbModalService.open(deleteProjectModal);
+    this.deleteIndex = index;
+    this.deleteProject = { ...this.projects[index] };
+  }
+  onDeleteConfirm() {
+    const projectIdToDelete = this.deleteProject.projectID;
+    if (projectIdToDelete) {
+      this.projectService
+        .deleteProject(this.deleteProject.projectID)
+        .subscribe({
+          next: (response) => {
+            this.projects.splice(this.deleteIndex, 1);
+            this.deleteProject = new Project();
+          },
+          error: (error) => {
+            console.log(error);
+          },
+        });
     }
   }
-  // registerOnValidatorChange?(fn: () => void): void {
-  //   throw new Error('Method not implemented.');
-  // }
+  @ViewChildren('prj') prj!: QueryList<ProjectComponent>;
+
+  onSelectClcik() {
+    let prjs = this.prj.toArray();
+    for (let i = 0; i < prjs.length; i++) {
+      prjs[i].onSelect();
+    }
+  }
+
+  onHideShowChange() {
+    let prjs = this.prj.toArray();
+    for (let i = 0; i < prjs.length; i++) {
+      prjs[i].hideDetails = this.hideDetails;
+    }
+  }
 }
