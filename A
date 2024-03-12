@@ -1,1 +1,87 @@
+<!-- app.component.html -->
+<div class="container-fluid">
+  <div class="row">
+    <!-- Video player as Bootstrap Carousel -->
+    <div class="col-md-9">
+      <div id="videoCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item" *ngFor="let video of videos; let i = index" [class.active]="i === currentVideoIndex">
+            <iframe class="d-block w-100" [src]="video.url" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>
+        <a class="carousel-control-prev" href="#videoCarousel" role="button" data-slide="prev" (click)="playPrevious()">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#videoCarousel" role="button" data-slide="next" (click)="playNext()">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Sidebar with Bootstrap accordion -->
+    <div class="col-md-3">
+      <div id="accordion">
+        <div class="card" *ngFor="let video of videos; let i = index">
+          <div class="card-header" id="heading{{i}}">
+            <h5 class="mb-0">
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{i}}" aria-expanded="true" aria-controls="collapse{{i}}">
+                {{ video.title }}
+              </button>
+            </h5>
+          </div>
+
+          <div id="collapse{{i}}" class="collapse" aria-labelledby="heading{{i}}" data-parent="#accordion">
+            <div class="card-body" (click)="playVideo(video)">
+              Play Video
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+// app.component.ts
+import { Component } from '@angular/core';
+
+interface Video {
+  title: string;
+  url: string;
+}
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  videos: Video[] = [
+    { title: 'Video 1', url: 'VIDEO_URL_1' },
+    { title: 'Video 2', url: 'VIDEO_URL_2' },
+    { title: 'Video 3', url: 'VIDEO_URL_3' },
+    // Add more videos as needed
+  ];
+
+  currentVideoIndex = 0;
+
+  playVideo(video: Video): void {
+    this.currentVideoIndex = this.videos.indexOf(video);
+  }
+
+  playPrevious(): void {
+    this.currentVideoIndex = (this.currentVideoIndex - 1 + this.videos.length) % this.videos.length;
+  }
+
+  playNext(): void {
+    this.currentVideoIndex = (this.currentVideoIndex + 1) % this.videos.length;
+  }
+}
+
+
+
+
 
