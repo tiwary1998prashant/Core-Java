@@ -1,22 +1,18 @@
-<div class="card">
-  <img
-    src="http://www.pixelstalk.net/wp-content/uploads/2016/06/Wallpaper-HD-color-images.jpg"
-    alt="post-image"
-    class="card-img-top"
-  />
-  <div class="card-body">
-    <small class="bg-light text-danger text-center">Design</small>
-    <small class="bg-light text-success text-center ml-3">Featured</small>
-    <small class="bg-light text-info text-center ml-3">View - 100</small>
-    <h5 class="mt-1">Easy way to Learn</h5>
-    <p>
-      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusantium,
-      doloribus explicabo dolore magni dolorem odit accusamus molestiae
-      repellendus debitis? Temporibus exercitationem corporis quo. Quasi
-      corporis, minus commodi quaerat vero perspiciatis.
-    </p>
-    <small class="bg-light text-warning text-center">
-      Last Update - JAN 20, 2024
-    </small>
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <div class="logo">Learn&nbsp;24&nbsp;Seven</div>
+        <div>
+          <ul class="nav justify-content-center">
+            <li class="nav-item"><a class="nav-link">Home</a></li>
+            <li class="nav-item"><a class="nav-link">About</a></li>
+            <li class="nav-item"><a class="nav-link">Terms & Conditions</a></li>
+            <li class="nav-item"><a class="nav-link">Contact</a></li>
+          </ul>
+        </div>
+        <p class="mb-2 mt-2">Copyright &copy; 2024 learn24seven.com</p>
+      </div>
+    </div>
   </div>
-</div>
+</footer>
