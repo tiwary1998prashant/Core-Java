@@ -1,37 +1,42 @@
-<section class="mt-5">
-  <div class="container mt-5 mb-5 p-5 bg-theme">
-    <h1 class="text-white text-center">Terms & Conditions</h1>
-    <div class="p-5 mt-4 bg-secondary-theme text-theme-primary">
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
-        optio commodi sequi eveniet exercitationem dolorem at consectetur
-        tempore quaerat incidunt totam, facilis quidem. Vitae at quos optio
-        laborum dolor provident! Lorem ipsum dolor sit amet consectetur,
-        adipisicing elit. Et, ipsa ipsam hic reiciendis perferendis nulla quis
-        culpa impedit delectus rerum. Mollitia laborum in autem consectetur,
-        doloremque doloribus similique repellat alias?
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
-        optio commodi sequi eveniet exercitationem dolorem at consectetur
-        tempore quaerat incidunt totam, facilis quidem. Vitae at quos optio
-        laborum dolor provident! Lorem ipsum dolor sit amet consectetur,
-        adipisicing elit. Et, ipsa ipsam hic reiciendis perferendis nulla quis
-        culpa impedit delectus rerum. Mollitia laborum in autem consectetur,
-        doloremque doloribus similique repellat alias?
-      </p>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
-        optio commodi sequi eveniet exercitationem dolorem at consectetur
-        tempore quaerat incidunt totam, facilis quidem. Vitae at quos optio
-        laborum dolor provident! Lorem ipsum dolor sit amet consectetur,
-        adipisicing elit. Et, ipsa ipsam hic reiciendis perferendis nulla quis
-        culpa impedit delectus rerum. Mollitia laborum in autem consectetur,
-        doloremque doloribus similique repellat alias?
-      </p>
-      <div class="text-center">
-        <button class="btn btn-info btn-sm mt-4 btn-theme">Back to Home</button>
+<div class="container">
+  <div class="row">
+    <div class="col-md-9">
+      <div class="card shadow-effect">
+        <img
+          src="http://www.pixelstalk.net/wp-content/uploads/2016/06/Wallpaper-HD-color-images.jpg"
+          alt=""
+          class="card-img-top img-fluid"
+        />
+        <div class="card-body">
+          <small class="bg-light text-danger text-center ">Design</small>
+          <small class="bg-light text-success text-center ml-2">Featured</small>
+          <small class="bg-light text-info text-center ml-2">View - 100</small>
+          <small class="bg-light text-warning text-center ml-2"
+            >LAST UPDATE - FEB 23,2024
+          </small>
+          <h1 class="mt-3 mb-3">Easy way to learn</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores
+            nesciunt a expedita assumenda magnam deserunt eum maxime quisquam
+            quidem sed, delectus necessitatibus totam ipsa amet illum dolorum?
+            Quaerat, quo voluptatibus? Lorem ipsum dolor, sit amet consectetur
+            adipisicing elit. Voluptatem nisi ratione autem, voluptates
+            praesentium exercitationem quibusdam dolore distinctio inventore
+            quia animi dolorem porro officia. Earum corporis libero quis velit
+            eaque. Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+            Pariatur itaque aperiam quis officia animi quidem quo reprehenderit
+            corporis atque. Ducimus id quaerat voluptatem fugit delectus
+            aspernatur perferendis laborum cupiditate dicta?
+          </p>
+        </div>
       </div>
+      <app-comment-form></app-comment-form>
+      <app-comment-list></app-comment-list>
+    </div>
+    <div class="col-md-3">
+      <app-post-card></app-post-card>
+      <app-post-card></app-post-card>
+      <app-post-card></app-post-card>
     </div>
   </div>
-</section>
+</div>
