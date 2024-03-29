@@ -1,31 +1,37 @@
-<div class="card shadow-effect">
-  <div class="card-body">
-    <div class="text-center mt-3 mb-5">
-      <h3>SUBSCRIPTION FORM</h3>
-      <p class="m-auto subs-text">
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Deleniti sed
-        odit alias quisquam tenetur aut enim ex exercitationem quae totam saepe
-        sunt quod eaque rem, nesciunt suscipit, voluptatem minus harum?
+<section class="mt-5">
+  <div class="container mt-5 mb-5 p-5 bg-theme">
+    <h1 class="text-white text-center">Terms & Conditions</h1>
+    <div class="p-5 mt-4 bg-secondary-theme text-theme-primary">
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        optio commodi sequi eveniet exercitationem dolorem at consectetur
+        tempore quaerat incidunt totam, facilis quidem. Vitae at quos optio
+        laborum dolor provident! Lorem ipsum dolor sit amet consectetur,
+        adipisicing elit. Et, ipsa ipsam hic reiciendis perferendis nulla quis
+        culpa impedit delectus rerum. Mollitia laborum in autem consectetur,
+        doloremque doloribus similique repellat alias?
       </p>
-      <form action="" class="form-inline mb-5 mt-5">
-        <div class="form-group col-md-5">
-          <input
-            type="text"
-            class="form-control shadow-effect"
-            placeholder="Your Name"
-          />
-        </div>
-        <div class="form-group col-md-5">
-          <input
-            type="email"
-            class="form-control shadow-effect"
-            placeholder="Email Address"
-          />
-        </div>
-        <div class="col-md-2">
-          <button class="btn btn-info btn-block btn-theme">SUBSCRIBE</button>
-        </div>
-      </form>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        optio commodi sequi eveniet exercitationem dolorem at consectetur
+        tempore quaerat incidunt totam, facilis quidem. Vitae at quos optio
+        laborum dolor provident! Lorem ipsum dolor sit amet consectetur,
+        adipisicing elit. Et, ipsa ipsam hic reiciendis perferendis nulla quis
+        culpa impedit delectus rerum. Mollitia laborum in autem consectetur,
+        doloremque doloribus similique repellat alias?
+      </p>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
+        optio commodi sequi eveniet exercitationem dolorem at consectetur
+        tempore quaerat incidunt totam, facilis quidem. Vitae at quos optio
+        laborum dolor provident! Lorem ipsum dolor sit amet consectetur,
+        adipisicing elit. Et, ipsa ipsam hic reiciendis perferendis nulla quis
+        culpa impedit delectus rerum. Mollitia laborum in autem consectetur,
+        doloremque doloribus similique repellat alias?
+      </p>
+      <div class="text-center">
+        <button class="btn btn-info btn-sm mt-4 btn-theme">Back to Home</button>
+      </div>
     </div>
   </div>
-</div>
+</section>
