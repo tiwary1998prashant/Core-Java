@@ -1,18 +1,23 @@
-<footer>
+<nav class="navbar navbar-expand-lg fixed-top">
   <div class="container">
-    <div class="row">
-      <div class="col-md-12 text-center">
-        <div class="logo">Learn&nbsp;24&nbsp;Seven</div>
-        <div>
-          <ul class="nav justify-content-center">
-            <li class="nav-item"><a class="nav-link">Home</a></li>
-            <li class="nav-item"><a class="nav-link">About</a></li>
-            <li class="nav-item"><a class="nav-link">Terms & Conditions</a></li>
-            <li class="nav-item"><a class="nav-link">Contact</a></li>
-          </ul>
-        </div>
-        <p class="mb-2 mt-2">Copyright &copy; 2024 learn24seven.com</p>
-      </div>
+    <div class="collapse navbar-collapse justify-content-center">
+      <ul class="navbar-nav">
+        <li class="nav-item ml-3"><a href="" class="nav-link">Design</a></li>
+        <li class="nav-item ml-3"><a href="" class="nav-link">Inspiration</a></li>
+        <li class="nav-item ml-3"><a href="" class="nav-link">Sports</a></li>
+        <li class="nav-item ml-3"><a href="" class="nav-link">Politics</a></li>
+      </ul>
     </div>
   </div>
-</footer>
+</nav>
+
+
+
+nav {
+  margin-top: 100px;
+  height: 50px;
+  background-color: var(--navbar-footer-color);
+}
+.nav-link {
+  text-transform: uppercase;
+}
