@@ -1,26 +1,59 @@
-<div class="bg-theme p-5">
-  <div class="container">
-    <h1 class="text-white">General Knowledge</h1>
-    <p class="text-white">
-      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Magni asperiores
-      ipsum ex molestias quis minima excepturi aut accusantium numquam, eius
-      fugit deleniti explicabo cum eligendi architecto voluptate quidem rem hic.
-    </p>
-  </div>
-</div>
-<div class="container mt-5 mb-5">
-  <div class="row">
-    <div class="col-md-4">
-      <app-post-card></app-post-card>
+<section class="featured-section">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12 text-center mt-5">
+        <h2 class="text-white">Featured Posts</h2>
+        <p class="text-white">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non dolore
+          praesentium quibusdam, ab ipsum ipsam maiores perspiciatis laboriosam
+          asperiores doloribus quo, totam libero, odio delectus id fugit sunt
+          reiciendis expedita.
+        </p>
+      </div>
     </div>
-    <div class="col-md-4">
-      <app-post-card></app-post-card>
-    </div>
-    <div class="col-md-4">
-      <app-post-card></app-post-card>
-    </div>
-    <div class="col-md-4">
+    <div class="row">
+      <div class="col-lg-3">
         <app-post-card></app-post-card>
       </div>
+      <div class="col-lg-3">
+        <app-post-card></app-post-card>
+      </div>
+      <div class="col-lg-3">
+        <app-post-card></app-post-card>
+      </div>
+      <div class="col-lg-3">
+        <app-post-card></app-post-card>
+      </div>
+    </div>
   </div>
-</div>
+</section>
+<section class="container mt-5">
+  <div class="col-md-12 text-center">
+    <h2>Latest Post</h2>
+    <p>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet eius
+      necessitatibus neque omnis sunt, molestiae atque quam aspernatur iste modi
+      quod laboriosam, pariatur sequi, maxime a cumque doloribus vel commodi?
+    </p>
+  </div>
+  <div class="row">
+    <div class="col-md-4 mt-3">
+      <app-post-card></app-post-card>
+    </div>
+    <div class="col-md-4 mt-3">
+      <app-post-card></app-post-card>
+    </div>
+    <div class="col-md-4 mt-3">
+      <app-post-card></app-post-card>
+    </div>
+    <div class="col-md-4 mt-3">
+      <app-post-card></app-post-card>
+    </div>
+    <div class="col-md-4 mt-3">
+      <app-post-card></app-post-card>
+    </div>
+    <div class="col-md-4 mt-3">
+      <app-post-card></app-post-card>
+    </div>
+  </div>
+</section>
