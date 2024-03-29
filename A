@@ -1,50 +1,31 @@
-/* You can add global styles to this file, and also import other style files */
-@import "~bootstrap/dist/css/bootstrap.min.css";
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
-
-:root {
-  --primary-color: #026467 !important;
-  --secondary-color: #e5f5ea !important;
-  --body-text-color: #596392 !important;
-  --navbar-footer-color: #f9f9f9 !important;
-}
-body {
-  font-family: "Roboto", sans-serif;
-  font-size: 12px;
-  color: var(--body-text-color);
-}
-.logo {
-  padding: 5px 20px;
-  border-radius: 20px;
-  background-color: var(--secondary-color);
-  color: var(--primary-color);
-}
-.nav-link {
-  color: var(--primary-color);
-}
-.shadow-effect {
-  border: none;
-  box-shadow: 0px 0px 33px -10px rgba(71, 114, 254, 0.3);
-}
-.bg-theme {
-  background-color: var(--primary-color);
-}
-.bg-secondary-theme {
-  background-color: var(--secondary-color);
-}
-.text-theme-primary {
-  color: var(--primary-color);
-}
-input[type="text"],
-input[type="email"] {
-  height: 60px;
-  padding-left: 20px;
-  font-size: 13px;
-  width: 100%;
-}
-.btn-theme {
-  height: 58px;
-  border: none;
-  font-size: 13px;
-  background-color: var(--primary-color);
-}
+<div class="card shadow-effect">
+  <div class="card-body">
+    <div class="text-center mt-3 mb-5">
+      <h3>SUBSCRIPTION FORM</h3>
+      <p class="m-auto subs-text">
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Deleniti sed
+        odit alias quisquam tenetur aut enim ex exercitationem quae totam saepe
+        sunt quod eaque rem, nesciunt suscipit, voluptatem minus harum?
+      </p>
+      <form action="" class="form-inline mb-5 mt-5">
+        <div class="form-group col-md-5">
+          <input
+            type="text"
+            class="form-control shadow-effect"
+            placeholder="Your Name"
+          />
+        </div>
+        <div class="form-group col-md-5">
+          <input
+            type="email"
+            class="form-control shadow-effect"
+            placeholder="Email Address"
+          />
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-info btn-block btn-theme">SUBSCRIBE</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
