@@ -1,59 +1,22 @@
-<section class="featured-section">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-12 text-center mt-5">
-        <h2 class="text-white">Featured Posts</h2>
-        <p class="text-white">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non dolore
-          praesentium quibusdam, ab ipsum ipsam maiores perspiciatis laboriosam
-          asperiores doloribus quo, totam libero, odio delectus id fugit sunt
-          reiciendis expedita.
-        </p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-3">
-        <app-post-card></app-post-card>
-      </div>
-      <div class="col-lg-3">
-        <app-post-card></app-post-card>
-      </div>
-      <div class="col-lg-3">
-        <app-post-card></app-post-card>
-      </div>
-      <div class="col-lg-3">
-        <app-post-card></app-post-card>
-      </div>
-    </div>
-  </div>
-</section>
-<section class="container mt-5">
-  <div class="col-md-12 text-center">
-    <h2>Latest Post</h2>
+<div class="card">
+  <img
+    src="http://www.pixelstalk.net/wp-content/uploads/2016/06/Wallpaper-HD-color-images.jpg"
+    alt="post-image"
+    class="card-img-top"
+  />
+  <div class="card-body">
+    <small class="bg-light text-danger text-center">Design</small>
+    <small class="bg-light text-success text-center ml-3">Featured</small>
+    <small class="bg-light text-info text-center ml-3">View - 100</small>
+    <h5 class="mt-1">Easy way to Learn</h5>
     <p>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet eius
-      necessitatibus neque omnis sunt, molestiae atque quam aspernatur iste modi
-      quod laboriosam, pariatur sequi, maxime a cumque doloribus vel commodi?
+      Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusantium,
+      doloribus explicabo dolore magni dolorem odit accusamus molestiae
+      repellendus debitis? Temporibus exercitationem corporis quo. Quasi
+      corporis, minus commodi quaerat vero perspiciatis.
     </p>
+    <small class="bg-light text-warning text-center">
+      Last Update - JAN 20, 2024
+    </small>
   </div>
-  <div class="row">
-    <div class="col-md-4 mt-3">
-      <app-post-card></app-post-card>
-    </div>
-    <div class="col-md-4 mt-3">
-      <app-post-card></app-post-card>
-    </div>
-    <div class="col-md-4 mt-3">
-      <app-post-card></app-post-card>
-    </div>
-    <div class="col-md-4 mt-3">
-      <app-post-card></app-post-card>
-    </div>
-    <div class="col-md-4 mt-3">
-      <app-post-card></app-post-card>
-    </div>
-    <div class="col-md-4 mt-3">
-      <app-post-card></app-post-card>
-    </div>
-  </div>
-</section>
+</div>
