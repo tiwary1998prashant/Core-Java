@@ -1,42 +1,26 @@
-<div class="container">
+<div class="bg-theme p-5">
+  <div class="container">
+    <h1 class="text-white">General Knowledge</h1>
+    <p class="text-white">
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Magni asperiores
+      ipsum ex molestias quis minima excepturi aut accusantium numquam, eius
+      fugit deleniti explicabo cum eligendi architecto voluptate quidem rem hic.
+    </p>
+  </div>
+</div>
+<div class="container mt-5 mb-5">
   <div class="row">
-    <div class="col-md-9">
-      <div class="card shadow-effect">
-        <img
-          src="http://www.pixelstalk.net/wp-content/uploads/2016/06/Wallpaper-HD-color-images.jpg"
-          alt=""
-          class="card-img-top img-fluid"
-        />
-        <div class="card-body">
-          <small class="bg-light text-danger text-center ">Design</small>
-          <small class="bg-light text-success text-center ml-2">Featured</small>
-          <small class="bg-light text-info text-center ml-2">View - 100</small>
-          <small class="bg-light text-warning text-center ml-2"
-            >LAST UPDATE - FEB 23,2024
-          </small>
-          <h1 class="mt-3 mb-3">Easy way to learn</h1>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores
-            nesciunt a expedita assumenda magnam deserunt eum maxime quisquam
-            quidem sed, delectus necessitatibus totam ipsa amet illum dolorum?
-            Quaerat, quo voluptatibus? Lorem ipsum dolor, sit amet consectetur
-            adipisicing elit. Voluptatem nisi ratione autem, voluptates
-            praesentium exercitationem quibusdam dolore distinctio inventore
-            quia animi dolorem porro officia. Earum corporis libero quis velit
-            eaque. Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-            Pariatur itaque aperiam quis officia animi quidem quo reprehenderit
-            corporis atque. Ducimus id quaerat voluptatem fugit delectus
-            aspernatur perferendis laborum cupiditate dicta?
-          </p>
-        </div>
+    <div class="col-md-4">
+      <app-post-card></app-post-card>
+    </div>
+    <div class="col-md-4">
+      <app-post-card></app-post-card>
+    </div>
+    <div class="col-md-4">
+      <app-post-card></app-post-card>
+    </div>
+    <div class="col-md-4">
+        <app-post-card></app-post-card>
       </div>
-      <app-comment-form></app-comment-form>
-      <app-comment-list></app-comment-list>
-    </div>
-    <div class="col-md-3">
-      <app-post-card></app-post-card>
-      <app-post-card></app-post-card>
-      <app-post-card></app-post-card>
-    </div>
   </div>
 </div>
