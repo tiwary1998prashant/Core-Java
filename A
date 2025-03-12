@@ -1,44 +1,49 @@
- const pdf = new jsPDF('p', 'mm', 'a4');
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
-    const addTableToPDF = (tableElement: HTMLElement, callback: () => void) => {
-      html2canvas(tableElement).then(canvas => {
-        const imgData = canvas.toDataURL('image/png');
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pageWidth - 20; // Adjust margins
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+@Component({
+  selector: 'app-table',
+  templateUrl: './table.component.html',
+  styleUrls: ['./table.component.css']
+})
+export class TableComponent {
+  @ViewChild('table') table!: ElementRef;
+  
+  tableData = Array.from({ length: 20 }, (_, i) => ({
+    id: i + 1,
+    name: `Item ${i + 1}`,
+    value: Math.floor(Math.random() * 100),
+  }));
 
-        if (pdfHeight <= pageHeight - 20) {
-          pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
-        } else {
-          let currentHeight = 10;
-          const scale = imgProps.width / pdfWidth;
-          const scaledPageHeight = (pageHeight - 20) * scale;
-          let imgTop = 0;
+  async downloadPDF() {
+    const rowsPerPage = 10; // Number of rows per page
+    const totalPages = Math.ceil(this.tableData.length / rowsPerPage);
+    const doc = new jsPDF();
 
-          while (imgTop < imgProps.height) {
-            const canvasPart = document.createElement('canvas');
-            canvasPart.width = imgProps.width;
-            canvasPart.height = Math.min(imgProps.height - imgTop, scaledPageHeight);
-            const ctx = canvasPart.getContext('2d');
-            ctx?.drawImage(canvas, 0, imgTop, imgProps.width, canvasPart.height, 0, 0, imgProps.width, canvasPart.height);
-            const partData = canvasPart.toDataURL('image/png');
-            pdf.addImage(partData, 'PNG', 10, currentHeight, pdfWidth, (canvasPart.height * pdfWidth) / canvasPart.width);
-            imgTop += scaledPageHeight;
-            if (imgTop < imgProps.height) {
-              pdf.addPage();
-            }
-          }
+    for (let i = 0; i < totalPages; i++) {
+      if (i > 0) {
+        doc.addPage(); // Add a new page for each chunk
+      }
+
+      // Create a temporary table with only 10 rows at a time
+      const tempTable = document.createElement('table');
+      tempTable.innerHTML = document.querySelector('table')!.innerHTML;
+      tempTable.querySelectorAll('tbody tr').forEach((row, index) => {
+        if (index < i * rowsPerPage || index >= (i + 1) * rowsPerPage) {
+          row.remove(); // Remove rows not in the current chunk
         }
-        callback();
       });
-    };
 
-    addTableToPDF(this.table1.nativeElement, () => {
-      pdf.addPage();
-      addTableToPDF(this.table2.nativeElement, () => {
-        pdf.save('tables.pdf');
-      });
-    });
+      // Convert table to image using html2canvas
+      const canvas = await html2canvas(tempTable);
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = 190;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+    }
+
+    doc.save('table.pdf'); // Save the generated PDF
   }
+}
