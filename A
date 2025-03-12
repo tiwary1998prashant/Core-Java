@@ -1,174 +1,81 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { DataService } from '../data.service';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import html2canvas from 'html2canvas';
+  async downloadPDF() {
+    const doc = new jsPDF();
+    const rowsPerPage = 10;
+    const totalPages = Math.ceil(this.itemDetails.length / rowsPerPage);
 
-@Component({
-  selector: 'app-table-pdf',
-  templateUrl: './table-pdf.component.html',
-  styleUrls: ['./table-pdf.component.css'],
-})
-export class TablePdfComponent implements OnInit {
-  data: any;
-  generalDetails: any;
-  itemDetails: any;
-  imagePath: string = './assets/head.png';
-  constructor(private ds: DataService) {}
-  ngOnInit(): void {
-    this.ds.getData().subscribe({
-      next: (res) => {
-        this.data = res;
-        this.generalDetails = res.generalDetailsRequest;
-        this.itemDetails = res.itemDetailsRequest;
-      },
-    });
-  }
-  @ViewChild('content1') content1!: ElementRef;
-  @ViewChild('content2') content2: any;
+    for (let i = 0; i < totalPages; i++) {
+      if (i > 0) {
+        doc.addPage();
+      }
 
-  downloadPDF() {
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const addTableToPDF = (tableElement: HTMLElement, callback: () => void) => {
-      html2canvas(tableElement).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pageWidth - 20; // Adjust margins
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        if (pdfHeight <= pageHeight - 20) {
-          pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
-        } else {
-          let currentHeight = 10;
-          const scale = imgProps.width / pdfWidth;
-          const scaledPageHeight = (pageHeight - 20) * scale;
-          let imgTop = 0;
-          while (imgTop < imgProps.height) {
-            const canvasPart = document.createElement('canvas');
-            canvasPart.width = imgProps.width;
-            canvasPart.height = Math.min(
-              imgProps.height - imgTop,
-              scaledPageHeight
-            );
-            const ctx = canvasPart.getContext('2d');
-            ctx?.drawImage(
-              canvas,
-              0,
-              imgTop,
-              imgProps.width,
-              canvasPart.height,
-              0,
-              0,
-              imgProps.width,
-              canvasPart.height
-            );
-            const partData = canvasPart.toDataURL('image/png');
-            pdf.addImage(
-              partData,
-              'PNG',
-              10,
-              currentHeight,
-              pdfWidth,
-              (canvasPart.height * pdfWidth) / canvasPart.width
-            );
-            imgTop += scaledPageHeight;
-            if (imgTop < imgProps.height) {
-              pdf.addPage();
-            }
+      // Clone table and keep only required rows
+      const table = this.tableContainer.nativeElement.cloneNode(true) as HTMLElement;
+      const tbody = table.querySelector('tbody');
+      if (tbody) {
+        tbody.querySelectorAll('tr').forEach((row, index) => {
+          if (index < i * rowsPerPage || index >= (i + 1) * rowsPerPage) {
+            row.remove();
           }
-        }
-        callback();
-      });
-    };
-    addTableToPDF(this.content1.nativeElement, () => {
-      pdf.addPage();
-      addTableToPDF(this.content2.nativeElement, () => {
-        pdf.save('data.pdf');
-      });
-    });
-  }
-  
-}
-<div>
-  <button (click)="downloadPDF()">Download</button>
-  <div #content1>
-    <table [border]="2">
-      <tr>
-        <td rowspan="4" colspan="3" style="text-align: center">
-          <img [src]="imagePath" alt="" />
-        </td>
-        <th>REFERENCE NUMBER</th>
-        <th>APPROVED BY</th>
-      </tr>
-      <tr>
-        <td rowspan="2">292417130001779502</td>
-        <td>{{ data?.approverName }}</td>
-      </tr>
-      <tr>
-        <th>APPROVAL DATE & TIME</th>
-      </tr>
-      <tr>
-        <td></td>
-        <td>10-12-2024 11:05 AM</td>
-      </tr>
-      <tr>
-        <td class="head" colspan="5">PART-1 GENERAL DETAILS</td>
-      </tr>
-      <tr>
-        <td rowspan="5" style="background-color: rgb(199, 233, 247)">
-          <svg width="30" height="200">
-            <text
-              x="55"
-              y="160"
-              transform="rotate(-90,10,150)"
-              font-size="14"
-              text-anchor="middle"
-            >
-              A. SEZ UNIT DETAILS
-            </text>
-          </svg>
-        </td>
-        <td class="key">SEZ UNIT CODE</td>
-        <td>{{ generalDetails.sezUnitCode }}</td>
-        <td class="key">IEC CODE</td>
-        <td>AABCJ76348</td>
-      </tr>
-      <tr>
-        <td colspan="2" class="key">SEZ UNIT NAME</td>
-        <td colspan="2" class="key">SEZ UNIT ADDRESS</td>
-      </tr>
-      <tr>
-        <td colspan="2">{{ generalDetails.sezUnitName }}</td>
-        <td colspan="2">{{ generalDetails.sezUnitCode }}</td>
-      </tr>
-      <tr>
-        <td class="key">SEZ CITY</td>
-        <td>{{ generalDetails.sezCity }}</td>
-        <td class="key">SEZ STATE</td>
-        <td>{{ generalDetails.sezState }}</td>
-      </tr>
-      <tr>
-        <td class="key">SEZ PIN CODE</td>
-        <td>{{ generalDetails.sezPinCode }}</td>
-        <td class="key">SEZ GSTIN</td>
-        <td>{{ generalDetails.sezGstin }}</td>
-      </tr>
-    </table>
-    <app-invoice-details
-      *ngFor="let invoice of data.invoiceDetailsRequest; let i = index"
-      [invoIceDetail]="invoice"
-      [index]="i"
-    ></app-invoice-details>
+        });
+      }
 
-    <app-item-details
-      *ngFor="let item of data?.itemDetailsRequest; let i = index"
-      [itemDetail]="item"
-      [index]="i"
-    ></app-item-details>
-  </div>
-  <div #content2>
-    <app-approver-details [imagePath]="imagePath"></app-approver-details>
+      // Convert filtered table to canvas
+      const canvas = await html2canvas(table);
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = 190;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+    }
+
+    doc.save('table.pdf');
+  }
+}
+Updated HTML (table-pdf.component.html)
+html
+Copy code
+<div>
+  <button (click)="downloadPDF()">Download PDF</button>
+
+  <div #tableContainer>
+    <table border="2">
+      <thead>
+        <tr>
+          <th>Item Name</th>
+          <th>Quantity</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of itemDetails">
+          <td>{{ item.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.price }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
+How It Works
+✔ Splits rows into pages of 10
+✔ Clones the table and removes unwanted rows dynamically
+✔ Adds new pages automatically when needed
+✔ Maintains table formatting with html2canvas
+
+This solution ensures structured pagination while keeping the visual style of your table intact. Let me know if you need modifications!
+
+
+
+
+
+
+
+
+
+
+
+Search
+
+Reason
+
 
