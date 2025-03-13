@@ -1,37 +1,36 @@
-<form [formGroup]="statusForm" (ngSubmit)="onSubmit()">
-  <mat-form-field appearance="outline">
-    <mat-label>Sender ID</mat-label>
-    <input matInput formControlName="senderId" />
-  </mat-form-field>
+<div class="container mt-4">
+  <form [formGroup]="statusForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="senderId" class="form-label">Sender ID</label>
+      <input type="text" id="senderId" class="form-control" formControlName="senderId" />
+    </div>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Job Number</mat-label>
-    <input matInput formControlName="jobNumber" />
-    <mat-error *ngIf="statusForm.controls.jobNumber.invalid && statusForm.controls.jobNumber.touched">
-      Job number must be exactly 3 digits.
-    </mat-error>
-  </mat-form-field>
+    <div class="mb-3">
+      <label for="jobNumber" class="form-label">Job Number</label>
+      <input type="text" id="jobNumber" class="form-control" formControlName="jobNumber" />
+      <div class="text-danger" *ngIf="statusForm.controls.jobNumber.invalid && statusForm.controls.jobNumber.touched">
+        Job number must be exactly 3 digits.
+      </div>
+    </div>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Receiver ID</mat-label>
-    <input matInput formControlName="receiverId" />
-  </mat-form-field>
+    <div class="mb-3">
+      <label for="receiverId" class="form-label">Receiver ID</label>
+      <input type="text" id="receiverId" class="form-control" formControlName="receiverId" />
+    </div>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Message Name</mat-label>
-    <mat-select formControlName="messageName">
-      <mat-option *ngFor="let msg of messageOptions" [value]="msg">{{ msg }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <div class="mb-3">
+      <label for="messageName" class="form-label">Message Name</label>
+      <select id="messageName" class="form-select" formControlName="messageName">
+        <option value="" disabled>Select a message</option>
+        <option *ngFor="let msg of messageOptions" [value]="msg">{{ msg }}</option>
+      </select>
+    </div>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Job Date</mat-label>
-    <input matInput [matDatepicker]="picker" formControlName="jobDate" />
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
+    <div class="mb-3">
+      <label for="jobDate" class="form-label">Job Date</label>
+      <input type="date" id="jobDate" class="form-control" formControlName="jobDate" />
+    </div>
 
-  <button mat-raised-button color="primary" type="submit" [disabled]="statusForm.invalid">
-    Submit
-  </button>
-</form>
+    <button type="submit" class="btn btn-primary" [disabled]="statusForm.invalid">Submit</button>
+  </form>
+</div>
