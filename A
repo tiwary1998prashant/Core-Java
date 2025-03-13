@@ -1,81 +1,37 @@
-  async downloadPDF() {
-    const doc = new jsPDF();
-    const rowsPerPage = 10;
-    const totalPages = Math.ceil(this.itemDetails.length / rowsPerPage);
+<form [formGroup]="statusForm" (ngSubmit)="onSubmit()">
+  <mat-form-field appearance="outline">
+    <mat-label>Sender ID</mat-label>
+    <input matInput formControlName="senderId" />
+  </mat-form-field>
 
-    for (let i = 0; i < totalPages; i++) {
-      if (i > 0) {
-        doc.addPage();
-      }
+  <mat-form-field appearance="outline">
+    <mat-label>Job Number</mat-label>
+    <input matInput formControlName="jobNumber" />
+    <mat-error *ngIf="statusForm.controls.jobNumber.invalid && statusForm.controls.jobNumber.touched">
+      Job number must be exactly 3 digits.
+    </mat-error>
+  </mat-form-field>
 
-      // Clone table and keep only required rows
-      const table = this.tableContainer.nativeElement.cloneNode(true) as HTMLElement;
-      const tbody = table.querySelector('tbody');
-      if (tbody) {
-        tbody.querySelectorAll('tr').forEach((row, index) => {
-          if (index < i * rowsPerPage || index >= (i + 1) * rowsPerPage) {
-            row.remove();
-          }
-        });
-      }
+  <mat-form-field appearance="outline">
+    <mat-label>Receiver ID</mat-label>
+    <input matInput formControlName="receiverId" />
+  </mat-form-field>
 
-      // Convert filtered table to canvas
-      const canvas = await html2canvas(table);
-      const imgData = canvas.toDataURL('image/png');
-      const imgWidth = 190;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  <mat-form-field appearance="outline">
+    <mat-label>Message Name</mat-label>
+    <mat-select formControlName="messageName">
+      <mat-option *ngFor="let msg of messageOptions" [value]="msg">{{ msg }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 
-      doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-    }
+  <mat-form-field appearance="outline">
+    <mat-label>Job Date</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="jobDate" />
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
 
-    doc.save('table.pdf');
-  }
-}
-Updated HTML (table-pdf.component.html)
-html
-Copy code
-<div>
-  <button (click)="downloadPDF()">Download PDF</button>
-
-  <div #tableContainer>
-    <table border="2">
-      <thead>
-        <tr>
-          <th>Item Name</th>
-          <th>Quantity</th>
-          <th>Price</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of itemDetails">
-          <td>{{ item.name }}</td>
-          <td>{{ item.quantity }}</td>
-          <td>{{ item.price }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-How It Works
-✔ Splits rows into pages of 10
-✔ Clones the table and removes unwanted rows dynamically
-✔ Adds new pages automatically when needed
-✔ Maintains table formatting with html2canvas
-
-This solution ensures structured pagination while keeping the visual style of your table intact. Let me know if you need modifications!
-
-
-
-
-
-
-
-
-
-
-
-Search
-
-Reason
-
-
+  <button mat-raised-button color="primary" type="submit" [disabled]="statusForm.invalid">
+    Submit
+  </button>
+</form>
