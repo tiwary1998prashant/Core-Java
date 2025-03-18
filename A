@@ -1,36 +1,87 @@
-<div class="container mt-4">
-  <form [formGroup]="statusForm" (ngSubmit)="onSubmit()">
-    <div class="mb-3">
-      <label for="senderId" class="form-label">Sender ID</label>
-      <input type="text" id="senderId" class="form-control" formControlName="senderId" />
+<div class="container-fluid p-0 m-0">
+    <div class="row g-0">
+        <div class="col-lg-12" style="box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3); padding:10px; background: white;">
+            <div class="filter mt-3">
+                <form [formGroup]="statusForm" (ngSubmit)="onSubmit()">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="senderId">Sender Id</label>
+                            <input type="text" id="senderId" class="form-control senderId" formControlName="senderId" disabled>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="jobNumber">Job Number<span style="color:red">*</span></label>
+                            <input type="text" id="jobNumber" class="form-control" formControlName="jobNo" />
+                            <div class="text-danger" *ngIf="statusForm.controls.jobNo.invalid &&  statusForm.controls.jobNo.touched">Job number must be exactly 3 digits</div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="receiverId">Receiver Id<span style="color:red">*</span></label>
+                            <input type="text" id="receiverId" class="form-control" formControlName="receiverId"/>
+                            <div class="text-danger" *ngIf="statusForm.controls.receiverId.invalid &&  statusForm.controls.receiverId.touched">this is required</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                            <label for="messageName">Message Name<span style="color:red">*</span></label>
+                            <select class="form-control" id="messageName" formControlName="messageName">
+                            <option value="" disabled>Select Message name</option>
+                            <option [value]="message" *ngFor="let message of messageName">{{message}}</option>
+                            
+                          </select>
+                        </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="jobDate">Job Date<span style="color:red">*</span></label>
+                            <input type="date" id="jobDate" class="form-control"formControlName="jobDate"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <ng-container *ngIf="statusDetails?.length===1">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                          <th>Job No.</th>
+                                          <th >Receiver Id</th>
+                                          <th >Tracking Id</th>
+                                          <th >Message Created on</th>
+                                          <th >Message Description</th>
+                                          <th >Status</th>
+                                          <th >Ack Sent On</th>
+                                          <th >Download</th>
+                        
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td>{{statusDetails[0].jobNo}}</td>
+                                          <td>{{statusDetails[0].receiverId}}</td>
+                                          <td>{{statusDetails[0].trackingId}}</td>
+                                          <td>{{statusDetails[0].msgCreatedOn}}</td>
+                                          <td>{{statusDetails[0].msgDesc}}</td>
+                                          <td>{{statusDetails[0].status}}</td>
+                                          <td>{{statusDetails[0].ackSentOn}}</td>
+                                          <td>{{statusDetails[0].download}}</td>   
+                                        </tr>
+                                    </tbody>
+                                             
+                                </table>
+                            </ng-container> 
+                        </div>
+                    </div>
+                    
+                    <div class="text-end">
+                        <button class="btn btn-primary mr-1" type="submit" [disabled]="statusForm.invalid">
+                            Check Status
+                        </button>
+                    </div>                   
+                </form>
+                
+            </div> 
+            <button class="btn btn-primary" (click)="goBack()">Back</button>
+        </div>
     </div>
-
-    <div class="mb-3">
-      <label for="jobNumber" class="form-label">Job Number</label>
-      <input type="text" id="jobNumber" class="form-control" formControlName="jobNumber" />
-      <div class="text-danger" *ngIf="statusForm.controls.jobNumber.invalid && statusForm.controls.jobNumber.touched">
-        Job number must be exactly 3 digits.
-      </div>
-    </div>
-
-    <div class="mb-3">
-      <label for="receiverId" class="form-label">Receiver ID</label>
-      <input type="text" id="receiverId" class="form-control" formControlName="receiverId" />
-    </div>
-
-    <div class="mb-3">
-      <label for="messageName" class="form-label">Message Name</label>
-      <select id="messageName" class="form-select" formControlName="messageName">
-        <option value="" disabled>Select a message</option>
-        <option *ngFor="let msg of messageOptions" [value]="msg">{{ msg }}</option>
-      </select>
-    </div>
-
-    <div class="mb-3">
-      <label for="jobDate" class="form-label">Job Date</label>
-      <input type="date" id="jobDate" class="form-control" formControlName="jobDate" />
-    </div>
-
-    <button type="submit" class="btn btn-primary" [disabled]="statusForm.invalid">Submit</button>
-  </form>
+   
 </div>
+ 
+   
+    
+
+  
